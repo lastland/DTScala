@@ -1,5 +1,5 @@
 package dependent.vectors
-
+import scala.language.higherKinds
 import dependent.nat._
 
 sealed trait Vec[N <: Nat] {
