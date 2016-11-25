@@ -136,3 +136,9 @@ object Tree {
       case tb: TreeB[_] => tb
     }
 }
+
+object Example {
+  val r0 = RBT(Empty).insert(3)
+  val r1 = r0.insert(1)
+  val r2 = r1.insert(5)
+}
