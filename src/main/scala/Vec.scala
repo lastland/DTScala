@@ -4,20 +4,17 @@ import scala.language.implicitConversions
 import dependent.nat._
 
 sealed trait Vec[N <: Nat] {
-  type NM[M <: Nat] <: Nat
-  type T[M <: Nat] = Vec[NM[M]]
-  def app[M <: Nat](b: Vec[M]): T[M]
+  def app[M <: Nat](b: Vec[M])(implicit n: N): Vec[n.Plus[M]]
 }
 
 case object Nil extends Vec[Z.type] {
-  type NM[M <: Nat] = M
-  def app[M <: Nat](b: Vec[M]) = b
+  def app[M <: Nat](b: Vec[M])(implicit n: Z.type) = b
 }
 
 case class Cons[N <: Nat](h: Int, t: Vec[N])
     extends Vec[Succ[N]] {
-  type NM[M <: Nat] = Succ[t.NM[M]]
-  def app[M <: Nat](b: Vec[M]) = Cons(h, t.app(b))
+  def app[M <: Nat](b: Vec[M])(implicit n: Succ[N]) =
+    Cons(h, t.app(b)(n.pred))
 }
 
 object Rep {
