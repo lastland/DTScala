@@ -5,19 +5,25 @@ import dependent.nat._
 
 sealed trait Vec[N <: Nat] {
   def app[M <: Nat](b: Vec[M])(implicit n: N): Vec[n.Plus[M]]
+  def apply[M <: Nat](m: M)(implicit lt: Lt[M, N]): Int
 }
 
 case object Nil extends Vec[Z.type] {
   def app[M <: Nat](b: Vec[M])(implicit n: Z.type) = b
+  def apply[M <: Nat](m: M)(implicit lt: Lt[M, Z.type]) = 0
 }
 
 case class Cons[N <: Nat](h: Int, t: Vec[N])
     extends Vec[Succ[N]] {
   def app[M <: Nat](b: Vec[M])(implicit n: Succ[N]) =
     Cons(h, t.app(b)(n.pred))
+  def apply[M <: Nat](m: M)(implicit lt: Lt[M, Succ[N]]) = lt match {
+    case LtZ() => h
+    case LtS(ltp) => t.apply(m.pred)(ltp)
+  }
 }
 
-object Rep {
+object Vec {
   sealed trait VecFun[N <: Nat] extends Function1[Int, Vec[N]]
 
   implicit def repz : VecFun[Z.type] = new VecFun[Z.type] {
