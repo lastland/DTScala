@@ -1,6 +1,4 @@
 package dependent.vectors
-import scala.language.higherKinds
-import scala.language.implicitConversions
 import dependent.nat._
 
 sealed trait Vec[N <: Nat] {
