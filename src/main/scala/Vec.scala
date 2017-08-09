@@ -21,19 +21,17 @@ case class Cons[N <: Nat](h: Int, t: Vec[N])
 }
 
 object Rep {
-  sealed trait VecVal[N <: Nat] {
-    def cons(x: Int): Vec[N]
+  sealed trait VecFun[N <: Nat] extends Function1[Int, Vec[N]]
+
+  implicit def repz : VecFun[Z.type] = new VecFun[Z.type] {
+    def apply(x: Int) = Nil
   }
 
-  implicit def repz : VecVal[Z.type] = new VecVal[Z.type] {
-    def cons(x: Int) = Nil
+  implicit def repn[N <: Nat] (implicit pv: VecFun[N]) :
+      VecFun[Succ[N]] = new VecFun[Succ[N]] {
+    def apply(x: Int) = Cons(x, pv.apply(x))
   }
 
-  implicit def repn[N <: Nat] (implicit pv: VecVal[N]) :
-      VecVal[Succ[N]] = new VecVal[Succ[N]] {
-    def cons(x: Int) = Cons(x, pv.cons(x))
-  }
-
-  def rep[N <: Nat](n: N, x: Int)(implicit v: VecVal[N]): Vec[N] =
-    v.cons(x)
+  def rep[N <: Nat](n: N, x: Int)(implicit v: VecFun[N]): Vec[N] =
+    v.apply(x)
 }
