@@ -18,18 +18,9 @@ case class Succ[P <: Nat](pred: P) extends Nat {
 
 object Nat {
   /* get the value from a singleton type */
-  def get[N <: Nat](implicit nv: NatVal[N]) = nv.v
+  def get[N <: Nat](implicit n: N) = n
 
-  sealed trait NatVal[N <: Nat] {
-    def v: N
-  }
+  implicit def zVal: Z.type = Z
 
-  implicit def zVal = new NatVal[Z.type] {
-    def v = Z
-  }
-
-  implicit def sVal[N <: Nat](implicit pv: NatVal[N]) =
-    new NatVal[Succ[N]] {
-      def v = Succ(pv.v)
-    }
+  implicit def sVal[N <: Nat](implicit pv: N): Succ[N] = Succ(pv)
 }
