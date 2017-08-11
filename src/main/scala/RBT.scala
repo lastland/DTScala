@@ -1,17 +1,16 @@
 package dependent.rbt
 import scala.language.higherKinds
-import scala.language.existentials
 import scala.language.implicitConversions
 import dependent.nat._
 
 sealed trait Color {
-  type Incr[N <: Nat]
+  type Incr[N <: Nat] <: Nat
 }
 
 sealed trait AlmostTree[N <: Nat] {
   def blacken: RBT
-  def balanceLB(z: Int, d: Tree[Color, N]): HiddenTree[Succ[N]]
-  def balanceRB(a: Tree[Color, N], x: Int): HiddenTree[Succ[N]]
+  def balanceLB(z: Int, d: Tree[Color, N]): HiddenTree[S[N]]
+  def balanceRB(a: Tree[Color, N], x: Int): HiddenTree[S[N]]
 }
 
 case object Red extends Color {
@@ -40,7 +39,7 @@ case object Red extends Color {
 }
 
 case object Black extends Color {
-  type Incr[N <: Nat] = Succ[N]
+  type Incr[N <: Nat] = S[N]
   case class AT[N <: Nat]
     (l: Tree[Color, N], v: Int, r: Tree[Color, N])
       extends AlmostTree[Incr[N]] {
@@ -89,7 +88,7 @@ case class RedNode[N <: Nat]
 
 case class BlackNode[N <: Nat]
   (l: Tree[Color, N], v: Int, r: Tree[Color, N])
-    extends TreeB[Succ[N]] {
+    extends TreeB[S[N]] {
   def rev = BlackNode(r.rev, v, l.rev)
   def max = Some(r.maxDefault(v))
   def maxDefault(d: Int) = r.maxDefault(v)
@@ -117,11 +116,11 @@ case class HR[N <: Nat](t: RedNode[N]) extends HiddenTree[N] {
   def forget = Red.AT[N](t.l, t.v, t.r)
 }
 
-case class HB[N <: Nat](t: BlackNode[N]) extends HiddenTree[Succ[N]] {
-  def balanceLR(x: Int, r: Tree[Color, Succ[N]]) =
-    Red.AT[Succ[N]](t, x, r)
-  def balanceRR(l: Tree[Color, Succ[N]], x: Int) =
-    Red.AT[Succ[N]](l, x, t)
+case class HB[N <: Nat](t: BlackNode[N]) extends HiddenTree[S[N]] {
+  def balanceLR(x: Int, r: Tree[Color, S[N]]) =
+    Red.AT[S[N]](t, x, r)
+  def balanceRR(l: Tree[Color, S[N]], x: Int) =
+    Red.AT[S[N]](l, x, t)
   def forget = Black.AT[N](t.l, t.v, t.r)
 }
 
