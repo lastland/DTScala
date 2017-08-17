@@ -33,7 +33,7 @@ case class Add(a: Expr[Int], b: Expr[Int]) extends Expr[Int] {
 }
 
 case class Mul(a: Expr[Int], b: Expr[Int]) extends Expr[Int] {
-  def eval = a.eval / b.eval
+  def eval = a.eval * b.eval
 }
 
 case class Eq(a: Expr[Boolean], b: Expr[Boolean]) extends Expr[Boolean] {
