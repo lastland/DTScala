@@ -1,7 +1,7 @@
 This is a demonstration of how to implement dependently-typed
 functions in Scala.
 
-[This tutorial](dtscala.pdf) is the best place to get started.
+[This tutorial](https://lastland.github.io/pl-blog/posts/2017-09-03-dtscala.html) is the best place to get started.
 
 For more details, refer to the code:
 
